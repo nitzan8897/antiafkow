@@ -16,7 +16,7 @@ kb = Controller()
 running = False
 quit_flag = False
 
-KEYS = ['w', 'a', 'd']
+KEYS = ['w', 'w', 'w', 'w', 'w', 'w', 'a', 'd']  # w = 75% chance, a/d = 12.5% each
 
 # Human-like timing ranges (seconds)
 PRESS_DURATION_MIN = 0.05
