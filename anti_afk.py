@@ -8,10 +8,12 @@ Anti-AFK Script for Overwatch
 import random
 import time
 import threading
-from pynput import keyboard
+from pynput import keyboard, mouse
 from pynput.keyboard import Key, Controller
+from pynput.mouse import Button, Controller as MouseController
 
 kb = Controller()
+mouse_ctrl = MouseController()
 
 running = False
 quit_flag = False
@@ -31,6 +33,22 @@ def press_random_key():
     kb.press(key)
     time.sleep(duration)
     kb.release(key)
+
+
+def v_press_loop():
+    global running, quit_flag
+    last_v = 0
+    while not quit_flag:
+        if running:
+            now = time.time()
+            if now - last_v >= 0.5:
+                kb.press('v')
+                mouse_ctrl.press(Button.left)
+                time.sleep(0.05)
+                kb.release('v')
+                mouse_ctrl.release(Button.left)
+                last_v = time.time()
+        time.sleep(0.05)
 
 
 def afk_loop():
@@ -73,6 +91,9 @@ def main():
 
     worker = threading.Thread(target=afk_loop, daemon=True)
     worker.start()
+
+    v_worker = threading.Thread(target=v_press_loop, daemon=True)
+    v_worker.start()
 
     with keyboard.Listener(on_press=on_press) as listener:
         listener.join()
