@@ -37,18 +37,24 @@ def press_random_key():
 
 def v_press_loop():
     global running, quit_flag
-    last_v = 0
+    use_v = True  # alternates between V and left click
     while not quit_flag:
         if running:
-            now = time.time()
-            if now - last_v >= 0.5:
+            if use_v:
                 kb.press('v')
-                mouse_ctrl.press(Button.left)
                 time.sleep(0.05)
                 kb.release('v')
+            else:
+                mouse_ctrl.press(Button.left)
+                time.sleep(0.05)
                 mouse_ctrl.release(Button.left)
-                last_v = time.time()
-        time.sleep(0.05)
+            use_v = not use_v
+            # Wait random 0.5-1s before the next action
+            deadline = time.time() + random.uniform(0.5, 1.0)
+            while time.time() < deadline and not quit_flag:
+                time.sleep(0.05)
+        else:
+            time.sleep(0.05)
 
 
 def afk_loop():
